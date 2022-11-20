@@ -40,14 +40,14 @@ jobs:
       - store_artifacts:
           path: app/build/outputs/apk/debug2
           destination: artifact-file
-      - run:
-          name: Assemble
-          command: ./gradlew assemble
-      - store_test_results:
-          path: app/build/assemble
-      - store_artifacts:
-          path: app/build/outputs/apk/debug3
-          destination: artifact-file
+    #   - run:
+    #       name: Assemble
+    #       command: ./gradlew assemble
+    #   - store_test_results:
+    #       path: app/build/assemble
+    #   - store_artifacts:
+    #       path: app/build/outputs/apk/debug3
+    #       destination: artifact-file
 #   say-hello:
 #     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
 #     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
