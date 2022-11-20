@@ -1,30 +1,69 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+
+orbs:
+  android: circleci/android@0.2.1
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-32
-    environment:
-      JVM_OPTS: -Xmx3200m
+    executor: android/android
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+          key: android-orb-v1-
       - run:
-          name: chmod permissions
-          command: chmod +x ./gradlew
+          name: Chmod permission
+          command: sudo chmod +x ./gradlew
       - run:
-          name: Download Dependencies
+          name: Download Depedency
           command: ./gradlew androidDependencies
       - save_cache:
           paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+            - ~/.android/build-cache
+            - ~/.android/cache
+          key: 'android-orb-v1-{{ epoch }}'
       - run:
-          name: Run Tests
-          command: ./gradlew lint test
-      - store_artifacts:
+          name: Run Build
+          command: ./gradlew build
+      - store_test_results:
           path: app/build/reports
-          destination: reports
+      - store_artifacts:
+          path: app/build/outputs/apk/debug1
+          destination: artifact-file
+      - run:
+          name: Lint Test
+          command: ./gradlew lint
       - store_test_results:
           path: app/build/test-results
+      - store_artifacts:
+          path: app/build/outputs/apk/debug2
+          destination: artifact-file
+      - run:
+          name: Assemble
+          command: ./gradlew assemble
+      - store_test_results:
+          path: app/build/assemble
+      - store_artifacts:
+          path: app/build/outputs/apk/debug3
+          destination: artifact-file
+#   say-hello:
+#     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+#     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+#     docker:
+#       - image: cimg/base:stable
+#     # Add steps to the job
+#     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+#     steps:
+#       - checkout
+#       - run:
+#           name: "Say hello"
+#           command: "echo Hello, World!"
+
+# # Invoke jobs via workflows
+# # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+# workflows:
+#   say-hello-workflow:
+#     jobs:
+#       - say-hello
