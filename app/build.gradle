@@ -8,17 +8,30 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
 
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     signingConfigs {
         release {
-            storeFile file('E:\\kuliahan\\studi independend Android\\Chapter8\\challenge8\\key0.jks')
-            storePassword '123456'
-            keyAlias 'key0'
-            keyPassword '123456'
+//            storeFile file('E:\\kuliahan\\studi independend Android\\Chapter8\\challenge8\\key0.jks')
+//            storePassword '123456'
+//            keyAlias 'key0'
+//            keyPassword '123456'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     compileSdk 32
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "com.zaahid.challenge8"
