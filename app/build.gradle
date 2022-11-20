@@ -10,6 +10,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('E:\\kuliahan\\studi independend Android\\Chapter8\\challenge8\\key0.jks')
+            storePassword '123456'
+            keyAlias 'key0'
+            keyPassword '123456'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -23,9 +31,16 @@ android {
     }
 
     buildTypes {
-        release {
+        debug{
             minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
